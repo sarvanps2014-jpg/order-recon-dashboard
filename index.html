@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Sterling Order Recon · intelliDash</title>
+    <link rel="stylesheet" href="css/styles.css?v=6.4">
+</head>
+<body>
+<div class="page">
+
+    <!-- ── Header ────────────────────────────────────────────────────── -->
+    <header>
+        <div class="header-left">
+            <div class="header-icon">⬡</div>
+            <div>
+                <div class="header-title">Bob intelliDash</div>
+                <div class="header-sub">Sterling Order Reconciliation · AI-powered, zero-touch, 2-minute daily verify</div>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div class="header-badge">Live · IBM Innovation 2026</div>
+            <div class="header-meta">Updated: <span id="lastUpdated">—</span></div>
+        </div>
+    </header>
+
+    <!-- ── Alert Banner ──────────────────────────────────────────────── -->
+    <div id="alertBanner" class="alert-banner alert-loading">
+        <div class="alert-dot"></div>
+        <span id="alertIcon">⏳</span>
+        <span id="alertText">Loading reconciliation data…</span>
+    </div>
+
+    <!-- ── Source Analyzer ──────────────────────────────────────────── -->
+    <div class="analyzer-section">
+        <div class="analyzer-title">📊 Source Analyzer</div>
+        <div class="analyzer-grid">
+
+            <!-- Inflight -->
+            <div class="analyzer-card">
+                <div class="analyzer-card-header">
+                    <span class="analyzer-icon">🛫</span>
+                    <span class="analyzer-card-label">Inflight</span>
+                </div>
+                <div class="analyzer-row-group">
+                    <div class="analyzer-row raw">
+                        <span class="analyzer-row-label">Raw (SOR_ORDER)</span>
+                        <span class="analyzer-row-val"><span id="raw-inflight-sor">—</span> <button class="ignored-link" onclick="showAnalyzerModal('inflight-sor-raw')">↗ View Data</button></span>
+                    </div>
+                    <div class="analyzer-row raw">
+                        <span class="analyzer-row-label">Raw (850)</span>
+                        <span class="analyzer-row-val"><span id="raw-inflight-850">—</span> <button class="ignored-link" onclick="showAnalyzerModal('inflight-850-raw')">↗ View Data</button></span>
+                    </div>
+                    <div class="analyzer-row raw raw-total">
+                        <span class="analyzer-row-label">Total Raw</span>
+                        <span class="analyzer-row-val"><span id="raw-inflight-total">—</span> <button class="ignored-link" onclick="showAnalyzerModal('inflight-all-raw')">↗ View Data</button></span>
+                    </div>
+                    <div class="analyzer-divider"></div>
+                    <div class="analyzer-row ignored">
+                        <span class="analyzer-row-label">Ignored (Business filter + duplicates)</span>
+                        <span class="analyzer-row-val ignored-val">
+                            <span id="ignored-inflight-count">—</span>
+                            <button class="ignored-link" id="ignored-inflight-btn" onclick="showIgnoredModal('inflight')" style="display:inline-block">↗ View Data</button>
+                        </span>
+                    </div>
+                    <div class="analyzer-row filtered">
+                        <span class="analyzer-row-label">After Filter</span>
+                        <span class="analyzer-row-val filtered-val"><span id="filtered-inflight">—</span> <button class="ignored-link" onclick="showAnalyzerModal('inflight-filtered')">↗ View Data</button></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Webforms -->
+            <div class="analyzer-card">
+                <div class="analyzer-card-header">
+                    <span class="analyzer-icon">📝</span>
+                    <span class="analyzer-card-label">Webforms</span>
+                </div>
+                <div class="analyzer-row-group">
+                    <div class="analyzer-row raw raw-total">
+                        <span class="analyzer-row-label">Total Raw</span>
+                        <span class="analyzer-row-val"><span id="raw-webforms-total">—</span> <button class="ignored-link" onclick="showAnalyzerModal('webforms-raw')">↗ View Data</button></span>
+                    </div>
+                    <div class="analyzer-divider"></div>
+                    <div class="analyzer-row ignored">
+                        <span class="analyzer-row-label">Ignored (duplicates)</span>
+                        <span class="analyzer-row-val ignored-val">
+                            <span id="ignored-webforms-count">—</span>
+                            <button class="ignored-link" id="ignored-webforms-btn" onclick="showIgnoredModal('webforms')" style="display:inline-block">↗ View Data</button>
+                        </span>
+                    </div>
+                    <div class="analyzer-row filtered">
+                        <span class="analyzer-row-label">After Filter</span>
+                        <span class="analyzer-row-val filtered-val"><span id="filtered-webforms">—</span> <button class="ignored-link" onclick="showAnalyzerModal('webforms-filtered')">↗ View Data</button></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outlook / SWFROUT -->
+            <div class="analyzer-card">
+                <div class="analyzer-card-header">
+                    <span class="analyzer-icon">📧</span>
+                    <span class="analyzer-card-label">Outlook (SWFROUT)</span>
+                </div>
+                <div class="analyzer-row-group">
+                    <div class="analyzer-row raw raw-total">
+                        <span class="analyzer-row-label">Total Raw</span>
+                        <span class="analyzer-row-val"><span id="raw-outlook-total">—</span> <button class="ignored-link" onclick="showAnalyzerModal('outlook-raw')">↗ View Data</button></span>
+                    </div>
+                    <div class="analyzer-divider"></div>
+                    <div class="analyzer-row ignored">
+                        <span class="analyzer-row-label">Non-PO Emails (out-of-office, auto-replies, etc.)</span>
+                        <span class="analyzer-row-val ignored-val">
+                            <span id="ignored-outlook-count">—</span>
+                            <button class="ignored-link" id="ignored-outlook-btn" onclick="showIgnoredModal('outlook')" style="display:inline-block">↗ View Data</button>
+                        </span>
+                    </div>
+                    <div class="analyzer-row filtered">
+                        <span class="analyzer-row-label">After Filter</span>
+                        <span class="analyzer-row-val filtered-val"><span id="filtered-outlook">—</span> <button class="ignored-link" onclick="showAnalyzerModal('outlook-filtered')">↗ View Data</button></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Totals Row ────────────────────────────────────────────────── -->
+    <div class="totals-row">
+        <div class="total-card">
+            <div class="total-label">Total Inflight</div>
+            <div class="total-value" id="tot-inflight">—</div>
+        </div>
+        <div class="total-card total-card-clickable" onclick="showTotalsModal('complete')" title="View all complete POs">
+            <div class="total-label">Complete Flow</div>
+            <div class="total-value green" id="tot-complete">—</div>
+            <div class="total-view-hint">↗ View all</div>
+        </div>
+        <div class="total-card total-card-clickable" onclick="showTotalsModal('issues')" title="View all issue POs">
+            <div class="total-label">Need Action</div>
+            <div class="total-value red" id="tot-issues">—</div>
+            <div class="total-view-hint">↗ View all</div>
+        </div>
+    </div>
+
+    <!-- ── Download Button ───────────────────────────────────────────── -->
+    <div style="text-align:right;margin-bottom:12px">
+        <button onclick="downloadInflightExcel()" style="background:rgba(29,112,232,.12);border:1px solid rgba(29,112,232,.35);color:#4d9fff;font-size:13px;font-weight:700;padding:7px 18px;border-radius:7px;cursor:pointer">
+            ⬇ Download Inflight Report (.xlsx)
+        </button>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- SOR_ORDER FLOW                                                   -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="flow-block">
+
+        <div class="flow-header">
+            <div class="flow-title">
+                <span class="flow-pill pill-sor">SOR_ORDER</span>
+                <span class="flow-path">Inflight → SWFROUT</span>
+            </div>
+            <div class="flow-stats">
+                <span class="stat stat-clickable" onclick="showStageModal('SOR_ORDER','inflight')" title="View Inflight records">
+                    <span class="stat-label">🛫 Inflight</span><span class="stat-val" id="sor-inflight">—</span>
+                </span>
+                <span class="stat-arrow">→</span>
+                <span class="stat stat-clickable" onclick="showStageModal('SOR_ORDER','swfrout')" title="View SWFROUT records">
+                    <span class="stat-label">📧 SWFROUT</span><span class="stat-val" id="sor-swfrout">—</span>
+                </span>
+                <span class="stat-divider"></span>
+                <span class="stat stat-green stat-clickable" onclick="showFlowTotalsModal('SOR_ORDER','complete')" title="View complete SOR POs">
+                    <span class="stat-label">Complete</span><span class="stat-val" id="sor-complete">—</span>
+                </span>
+                <span class="stat stat-red stat-clickable" onclick="showFlowTotalsModal('SOR_ORDER','issues')" title="View SOR issue POs">
+                    <span class="stat-label">Issues</span><span class="stat-val" id="sor-issues">—</span>
+                </span>
+                <span class="stat">
+                    <span class="stat-label">Success</span><span class="stat-val" id="sor-rate">—</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- S2: Inflight but NOT in SWFROUT -->
+        <div class="problem-block" id="sor-s2-block">
+            <div class="problem-header problem-red">
+                <span class="problem-badge">S2 — ACTION REQUIRED</span>
+                <span class="problem-title">In Inflight — NOT delivered to SWFROUT</span>
+                <span class="problem-count" id="sor-s2-count">0</span>
+                <span class="problem-hint">Check SOR cXML Order Routing</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('sor-s2-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="sor-s2-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S3: SWFROUT but NOT in Inflight -->
+        <div class="problem-block" id="sor-s3-block">
+            <div class="problem-header problem-amber">
+                <span class="problem-badge">S3 — INVESTIGATE</span>
+                <span class="problem-title">In SWFROUT — NO matching Inflight record</span>
+                <span class="problem-count" id="sor-s3-count">0</span>
+                <span class="problem-hint">Verify source / duplicate send</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('sor-s3-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="sor-s3-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S1: Complete — collapsed by default -->
+        <details class="ok-details">
+            <summary>✅ Complete Flow — <span id="sor-s1-count">0</span> orders delivered successfully</summary>
+            <div class="po-table-wrap">
+                <table class="po-table">
+                    <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>SWFROUT</th><th>Status</th></tr></thead>
+                    <tbody id="sor-s1-list"></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div><!-- end SOR_ORDER -->
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- 850 FLOW                                                         -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="flow-block">
+
+        <div class="flow-header">
+            <div class="flow-title">
+                <span class="flow-pill pill-850">850</span>
+                <span class="flow-path">Inflight → Webforms → SWFROUT</span>
+            </div>
+            <div class="flow-stats">
+                <span class="stat stat-clickable" onclick="showStageModal('850','inflight')" title="View Inflight records">
+                    <span class="stat-label">🛫 Inflight</span><span class="stat-val" id="850-inflight">—</span>
+                </span>
+                <span class="stat-arrow">→</span>
+                <span class="stat stat-clickable" onclick="showStageModal('850','webforms')" title="View Webforms records">
+                    <span class="stat-label">📝 Webforms</span><span class="stat-val" id="850-webforms">—</span>
+                </span>
+                <span class="stat-arrow">→</span>
+                <span class="stat stat-clickable" onclick="showStageModal('850','swfrout')" title="View SWFROUT records">
+                    <span class="stat-label">📧 SWFROUT</span><span class="stat-val" id="850-swfrout">—</span>
+                </span>
+                <span class="stat-divider"></span>
+                <span class="stat stat-green stat-clickable" onclick="showFlowTotalsModal('850','complete')" title="View complete 850 POs">
+                    <span class="stat-label">Complete</span><span class="stat-val" id="850-complete">—</span>
+                </span>
+                <span class="stat stat-red stat-clickable" onclick="showFlowTotalsModal('850','issues')" title="View 850 issue POs">
+                    <span class="stat-label">Issues</span><span class="stat-val" id="850-issues">—</span>
+                </span>
+                <span class="stat">
+                    <span class="stat-label">Success</span><span class="stat-val" id="850-rate">—</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- S4: Inflight only -->
+        <div class="problem-block" id="850-s4-block">
+            <div class="problem-header problem-red">
+                <span class="problem-badge">S4 — ACTION REQUIRED</span>
+                <span class="problem-title">In Inflight — NOT in Webforms, NOT in SWFROUT</span>
+                <span class="problem-count" id="850-s4-count">0</span>
+                <span class="problem-hint">Confirm order was processed by Sterling</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s4-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s4-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S2: Stuck after Webforms -->
+        <div class="problem-block" id="850-s2-block">
+            <div class="problem-header problem-red">
+                <span class="problem-badge">S2 — ACTION REQUIRED</span>
+                <span class="problem-title">In Inflight + Webforms — NOT in SWFROUT</span>
+                <span class="problem-count" id="850-s2-count">0</span>
+                <span class="problem-hint">Check Sterling Web Forms delivery to SWFROUT</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s2-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s2-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S3: Inflight + SWFROUT, skipped Webforms -->
+        <div class="problem-block" id="850-s3-block">
+            <div class="problem-header problem-amber">
+                <span class="problem-badge">S3 — INVESTIGATE</span>
+                <span class="problem-title">In Inflight + SWFROUT — SKIPPED Webforms</span>
+                <span class="problem-count" id="850-s3-count">0</span>
+                <span class="problem-hint">Investigate bypass route — Webforms stage missing</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s3-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s3-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S5: Webforms + SWFROUT, no Inflight -->
+        <div class="problem-block" id="850-s5-block">
+            <div class="problem-header problem-amber">
+                <span class="problem-badge">S5 — INVESTIGATE</span>
+                <span class="problem-title">In Webforms + SWFROUT — NO Inflight record</span>
+                <span class="problem-count" id="850-s5-count">0</span>
+                <span class="problem-hint">Confirm order origin — no Inflight entry found</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s5-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s5-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S6: Webforms only -->
+        <div class="problem-block" id="850-s6-block">
+            <div class="problem-header problem-amber">
+                <span class="problem-badge">S6 — INVESTIGATE</span>
+                <span class="problem-title">In Webforms ONLY — no Inflight, no SWFROUT</span>
+                <span class="problem-count" id="850-s6-count">0</span>
+                <span class="problem-hint">Order stalled in Webforms — not forwarded to SWFROUT</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s6-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s6-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S7: SWFROUT only -->
+        <div class="problem-block" id="850-s7-block">
+            <div class="problem-header problem-amber">
+                <span class="problem-badge">S7 — INVESTIGATE</span>
+                <span class="problem-title">In SWFROUT ONLY — no Inflight, no Webforms</span>
+                <span class="problem-count" id="850-s7-count">0</span>
+                <span class="problem-hint">Unknown origin — review SWFROUT mailbox</span>
+            </div>
+            <div class="problem-body">
+                <input class="search-input" placeholder="Search PO…" oninput="filterPOList('850-s7-list', this.value)">
+                <div class="po-table-wrap">
+                    <table class="po-table">
+                        <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Action</th></tr></thead>
+                        <tbody id="850-s7-list"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- S1: Complete — collapsed -->
+        <details class="ok-details">
+            <summary>✅ Complete Flow — <span id="850-s1-count">0</span> orders delivered successfully</summary>
+            <div class="po-table-wrap">
+                <table class="po-table">
+                    <thead><tr><th>#</th><th>PO Number</th><th>Inflight</th><th>Webforms</th><th>SWFROUT</th><th>Status</th></tr></thead>
+                    <tbody id="850-s1-list"></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div><!-- end 850 -->
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- ANALYTICS CHARTS ROW                                            -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <div class="charts-section">
+        <div class="charts-section-title">Analytics &amp; Insights</div>
+        <div class="charts-row">
+
+            <!-- Chart 1: Order Volume by Stage (horizontal bars) -->
+            <div class="chart-card">
+                <div class="chart-title">Order Volume by Stage</div>
+                <div class="hbar-list" id="chart-volume"></div>
+            </div>
+
+            <!-- Chart 2: Health Donut (Complete vs Issues) -->
+            <div class="chart-card">
+                <div class="chart-title">Overall Health</div>
+                <div class="donut-wrap">
+                    <svg id="chart-donut" width="110" height="110" viewBox="0 0 110 110" class="chart-canvas" style="flex-shrink:0">
+                        <circle cx="55" cy="55" r="40" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="18"/>
+                        <circle id="donut-ok"  cx="55" cy="55" r="40" fill="none" stroke="#34d399" stroke-width="18"
+                                stroke-dasharray="0 252" stroke-linecap="round"
+                                transform="rotate(-90 55 55)"
+                                style="transition:stroke-dasharray 1s cubic-bezier(.4,0,.2,1)"/>
+                        <circle id="donut-err" cx="55" cy="55" r="40" fill="none" stroke="#f87171" stroke-width="18"
+                                stroke-dasharray="0 252" stroke-linecap="round"
+                                transform="rotate(-90 55 55)"
+                                style="transition:stroke-dasharray 1s cubic-bezier(.4,0,.2,1) .15s"/>
+                        <text id="donut-pct" x="55" y="51" text-anchor="middle" font-size="14" font-weight="800" fill="#e2eaf8">—</text>
+                        <text x="55" y="65" text-anchor="middle" font-size="8" fill="#5a7caa">success</text>
+                    </svg>
+                    <div class="donut-legend" id="chart-donut-legend"></div>
+                </div>
+            </div>
+
+            <!-- Chart 3: 850 Scenario Breakdown (vertical SVG bars) -->
+            <div class="chart-card">
+                <div class="chart-title">850 Scenario Breakdown</div>
+                <svg id="chart-850-bars" class="chart-canvas vbar-svg" viewBox="0 0 220 120" preserveAspectRatio="xMidYMid meet"></svg>
+            </div>
+
+            <!-- Chart 4: E2E Pipeline Funnel -->
+            <div class="chart-card">
+                <div class="chart-title">E2E Pipeline Funnel</div>
+                <div class="funnel-list" id="chart-funnel"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>Sterling Order Flow Reconciliation &nbsp;·&nbsp; Auto-updated from live data &nbsp;·&nbsp; <span>Made with IBM Bob intelliDash</span></footer>
+
+</div><!-- .page -->
+<script src="js/app.js?v=6.4"></script>
+</body>
+</html>
